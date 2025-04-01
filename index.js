@@ -9,7 +9,7 @@ const infosFn = async (nome) => {
         ctx = `
             <div class="ctx">
                 <div>
-                    <img src="">
+                    <img src="${data.avatar_url}">
                     <h2>${data.name}</h2>
                     <p>${data.login}</p>
                 </div>
@@ -32,8 +32,24 @@ const reposFn = async (nome) => {
     try {
         const resposta = await fetch(`https://api.github.com/users/${nome}/repos`)
         const data = await resposta.json()
+
+        let ctx = ''
         data.forEach((repo) => {
-            console.log(repo)
+            ctx += `
+                <div class="repo">
+                    <h2>${repo.name}</h2>
+                    <hr>
+                    <p>Permite fork ${repo.allow_forking}</p>
+                    <p>URL para clone ${repo.clone_url}</p>
+                    <p>Criado em: ${repo.created_at}</p>
+                    <p>Última atualização: ${repo.updated_at}</p>
+                    <p>Branch: ${repo.default_branch}</p>
+                    <p>Descrição: ${repo.description}</p>
+                    <p>Linguagem: ${repo.language}</p>
+                    <p>Visibilidade: ${repo.visibility}</p>
+                </div>
+            `
+            document.querySelector('.repos').innerHTML = ctx
         })
     } catch (err) {
         console.log(err)
@@ -43,4 +59,5 @@ const reposFn = async (nome) => {
 form.addEventListener('submit', (e) => {
     e.preventDefault()
     infosFn(input.value)
+    reposFn(input.value)
 })
